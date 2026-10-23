@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ekspedisi Karya Tulis Ilmiah</title>
+<style>
+:root{--bg:#f3f6f1;--card:#fff;--ink:#17261f;--mut:#5b6b62;--line:#cfd9d1;--pri:#1f6f55;--ok:#2e8b3d;--bad:#c0392b;--gold:#b7791f;--okbg:#e3f3e5;--badbg:#fbe7e4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a15;--card:#18271f;--ink:#e8f1ea;--mut:#9db0a4;--line:#2c4034;--pri:#4cc79b;--ok:#6fd27d;--bad:#ff8a7a;--gold:#f0b84e;--okbg:#1c3a23;--badbg:#44211d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1a15;--card:#18271f;--ink:#e8f1ea;--mut:#9db0a4;--line:#2c4034;--pri:#4cc79b;--ok:#6fd27d;--bad:#ff8a7a;--gold:#f0b84e;--okbg:#1c3a23;--badbg:#44211d;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Georgia,"Times New Roman",serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1,h2,h3{line-height:1.2;margin:.2em 0 .4em}
+h1{font-size:1.9rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+.mut{color:var(--mut);font-size:.92rem}
+button,select,input{font:inherit;color:var(--ink)}
+button{background:var(--pri);color:var(--bg);border:0;border-radius:8px;padding:10px 16px;cursor:pointer;font-weight:bold}
+button.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+input,select{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;margin:4px 0}
+.opt{display:block;width:100%;text-align:left;background:var(--bg);color:var(--ink);border:1px solid var(--line);margin:8px 0;font-weight:normal}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--bad)}
+.opt.gone{opacity:.3;text-decoration:line-through}
+.sb{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);border-radius:20px;padding:3px 10px;font-size:.88rem;background:var(--card)}
+.chip.on{border-color:var(--pri);box-shadow:inset 0 0 0 1px var(--pri);font-weight:bold}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--pri)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.pts{font-weight:bold}.p{color:var(--ok)}.m{color:var(--bad)}
+.rule td,.rule th{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left;font-size:.92rem}
+table{border-collapse:collapse;width:100%}
+.fb{padding:10px 12px;border-radius:8px;margin:10px 0}
+.fb.ok{background:var(--okbg)}.fb.bad{background:var(--badbg)}
+</style>
+</head>
+<body>
+<div class="row" style="max-width:720px;margin:0 auto;padding:8px 16px 0;justify-content:flex-end"><button class="alt" onclick="mu=!mu;this.textContent=mu?'Efek suara: nyala':'Efek suara: mati'">Efek suara: nyala</button><button class="alt" id="mb" onclick="music()">Musik: mati</button></div>
+<main id="app"></main>
+<script>
+var LV=[
+{t:"Level 1: Pendahuluan",i:"Pendahuluan memuat latar belakang (kesenjangan kondisi ideal dan kenyataan), rumusan masalah, tujuan, manfaat, dan kebaruan penelitian."},
+{t:"Level 2: Kajian Teori",i:"Kajian teori menjadi landasan konseptual: teori, penelitian relevan, kerangka berpikir, dan hipotesis (bila kuantitatif), dengan sitasi yang jujur."},
+{t:"Level 3: Metodologi Kualitatif dan Kuantitatif",i:"Kualitatif menggali makna secara mendalam (peneliti sebagai instrumen, triangulasi). Kuantitatif menguji hipotesis dengan angka, instrumen valid-reliabel, dan statistik."},
+{t:"Level 4: Metodologi R&D dan Mixed Methods",i:"R&D menghasilkan dan menguji produk (misalnya ADDIE). Mixed methods menggabungkan kualitatif dan kuantitatif: explanatory, exploratory, convergent."},
+{t:"Level 5: Boss Battle (poin x2)",i:"Pilih desain penelitian yang paling tepat untuk setiap kasus. Poin benar dan salah dikali dua."}];
+var Q=[
+[0,"Bagian yang memaparkan kesenjangan antara kondisi ideal dan kenyataan di lapangan adalah...",["Latar belakang masalah","Kajian pustaka","Teknik analisis data","Daftar pustaka"],0,"Latar belakang menunjukkan masalah (gap) dan alasan penelitian penting dilakukan."],
+[0,"Rumusan masalah yang baik ditulis dalam bentuk...",["Pernyataan umum","Kalimat tanya yang spesifik dan dapat diteliti","Kesimpulan awal","Judul penelitian"],1,"Rumusan masalah berupa pertanyaan yang jelas, spesifik, dan dapat dijawab melalui data."],
+[0,"Tujuan penelitian harus selaras dengan...",["Daftar pustaka","Jumlah halaman","Rumusan masalah","Selera pembimbing"],2,"Setiap rumusan masalah dijawab oleh satu tujuan, sehingga keduanya harus sejajar."],
+[0,"Manfaat teoretis penelitian berkaitan dengan...",["Keuntungan finansial peneliti","Kemudahan pengumpulan data","Penambahan jumlah sitasi","Sumbangan bagi pengembangan konsep atau ilmu"],3,"Manfaat teoretis = kontribusi pada ilmu; manfaat praktis = kegunaan bagi pengguna atau lapangan."],
+[0,"Kebaruan (novelty) penelitian paling tepat ditunjukkan dengan...",["Memakai judul yang panjang","Membandingkan penelitian terdahulu dan menunjukkan celah yang diisi","Menyalin penelitian lama","Memperbanyak jumlah responden"],1,"Novelty muncul dari celah (research gap) yang belum dijawab penelitian terdahulu."],
+[0,"Batasan masalah berfungsi untuk...",["Menambah halaman","Menyembunyikan kelemahan","Memfokuskan penelitian agar tidak melebar","Menghindari revisi"],2,"Batasan menjaga ruang lingkup tetap terarah dan dapat diselesaikan."],
+[1,"Fungsi utama kajian teori adalah...",["Landasan konseptual untuk menjelaskan variabel atau fenomena","Menjelaskan alat statistik","Menampilkan hasil penelitian","Mengganti pembahasan"],0,"Kajian teori membingkai cara kita memahami dan menganalisis masalah."],
+[1,"Sumber rujukan yang paling kredibel untuk karya tulis ilmiah adalah...",["Blog pribadi","Forum diskusi","Media sosial","Jurnal ilmiah bereputasi dan buku akademik"],3,"Jurnal dan buku akademik melalui proses telaah sehingga lebih dapat dipertanggungjawabkan."],
+[1,"Penelitian relevan (terdahulu) dipakai untuk...",["Mengisi halaman","Menunjukkan posisi dan kebaruan penelitian kita","Menggantikan data primer","Membuat daftar isi"],1,"Penelitian relevan memetakan apa yang sudah ada dan celah yang akan diisi."],
+[1,"Kerangka berpikir adalah...",["Daftar istilah","Jadwal penelitian","Alur logis hubungan antarkonsep yang mengarah ke fokus atau hipotesis","Rangkuman hasil"],2,"Kerangka berpikir menyambungkan teori dengan masalah penelitian secara runtut."],
+[1,"Mengambil ide orang lain, mengubah kata-katanya, tetapi tidak menyebut sumber termasuk...",["Plagiarisme","Parafrase yang benar","Triangulasi","Sitasi tidak langsung yang sah"],0,"Parafrase tetap wajib disertai sitasi; tanpa sumber, itu plagiarisme."],
+[1,"Hipotesis penelitian kuantitatif dirumuskan berdasarkan...",["Dugaan tanpa dasar","Kajian teori dan penelitian terdahulu","Hasil analisis data","Pendapat responden"],1,"Hipotesis adalah jawaban sementara yang berpijak pada teori dan temuan sebelumnya."],
+[2,"Penelitian yang menggali makna dan pengalaman partisipan secara mendalam adalah...",["Kuantitatif","Kualitatif","Eksperimen murni","Survei skala besar"],1,"Pendekatan kualitatif menekankan pemahaman makna, konteks, dan proses."],
+[2,"Instrumen utama pada penelitian kualitatif adalah...",["Angket tertutup","Uji statistik","Peneliti sendiri (human instrument)","Skala Likert"],2,"Peneliti terlibat langsung mengumpulkan dan menafsirkan data di lapangan."],
+[2,"Ciri penelitian kuantitatif adalah...",["Data numerik dan uji statistik untuk menguji hipotesis","Fokus pada makna subjektif","Sampel kecil dan purposif","Tanpa instrumen baku"],0,"Kuantitatif bersifat terukur, objektif, dan menggeneralisasi dari sampel ke populasi."],
+[2,"Triangulasi pada kualitatif digunakan untuk...",["Menghitung rata-rata","Memilih sampel","Menentukan hipotesis","Menguji keabsahan data dari beberapa sumber, teknik, atau waktu"],3,"Triangulasi sumber, teknik, dan waktu meningkatkan kredibilitas temuan."],
+[2,"Uji validitas dan reliabilitas terutama dilakukan pada...",["Catatan lapangan","Instrumen angket atau tes kuantitatif","Transkrip wawancara","Dokumentasi foto"],1,"Instrumen kuantitatif harus tepat mengukur (valid) dan konsisten (reliabel)."],
+[2,"Penentuan sampel dengan rumus Slovin paling lazim pada penelitian...",["Fenomenologi","Etnografi","Kuantitatif","Studi kasus"],2,"Rumus Slovin menghitung ukuran sampel dari populasi pada penelitian kuantitatif."],
+[3,"Tujuan utama penelitian R&D adalah...",["Menghasilkan produk lalu menguji kelayakan atau efektivitasnya","Menguji teori tanpa produk","Mendeskripsikan budaya","Menghitung korelasi saja"],0,"R&D (Research and Development) berujung pada produk yang teruji."],
+[3,"Singkatan ADDIE pada R&D adalah...",["Analyze, Draft, Deliver, Inspect, End","Aim, Define, Do, Interpret, Edit","Analysis, Design, Development, Implementation, Evaluation","Assess, Decide, Develop, Improve, Execute"],2,"ADDIE: Analysis, Design, Development, Implementation, Evaluation."],
+[3,"Validasi ahli materi dan media pada R&D umumnya dilakukan...",["Setelah produk disebarluaskan","Sebelum uji coba lapangan","Setelah artikel terbit","Tanpa dokumen apa pun"],1,"Produk direvisi berdasarkan masukan ahli sebelum diuji ke pengguna."],
+[3,"Pada mixed methods sequential explanatory, urutannya adalah...",["Kualitatif dulu, kuantitatif sesudahnya","Keduanya tanpa integrasi","Hanya kuantitatif","Kuantitatif dulu, lalu kualitatif untuk menjelaskan hasilnya"],3,"Data angka dijelaskan lebih dalam oleh data kualitatif pada tahap kedua."],
+[3,"Desain convergent (paralel) dalam mixed methods berarti...",["Data kualitatif dan kuantitatif dikumpulkan bersamaan lalu dibandingkan","Produk dikembangkan lebih dulu","Hanya satu sumber data","Data dikumpulkan tahun berbeda tanpa dibandingkan"],0,"Dua jenis data dikumpulkan dalam waktu sama, lalu diintegrasikan."],
+[3,"Alasan utama memilih mixed methods adalah...",["Supaya terlihat rumit","Mendapat pemahaman yang lebih komprehensif","Menghindari statistik","Mempersingkat waktu"],1,"Kekuatan satu metode melengkapi kelemahan metode lainnya."],
+[4,"Peneliti menguji pengaruh model pembelajaran terhadap nilai 200 siswa dengan uji t. Pendekatan tepat:",["Kuantitatif","Kualitatif","R&D","Etnografi"],0,"Pengaruh antarvariabel + uji statistik = kuantitatif."],
+[4,"Peneliti ingin membuat e-modul dan menguji kelayakannya oleh ahli dan siswa. Pendekatan tepat:",["Kuantitatif korelasional","Research and Development","Fenomenologi","Studi dokumen"],1,"Menghasilkan produk lalu mengujinya adalah ciri R&D."],
+[4,"Peneliti memahami pengalaman guru honorer menghadapi tekanan kerja lewat wawancara mendalam. Pendekatan tepat:",["Eksperimen","Survei","Kualitatif (fenomenologi)","R&D"],2,"Pengalaman dan makna subjektif digali secara kualitatif."],
+[4,"Survei angket pada 300 siswa, lalu wawancara beberapa siswa untuk menjelaskan hasil yang mengejutkan. Desain tepat:",["Kualitatif murni","R&D model 4D","Kuantitatif murni","Mixed methods sequential explanatory"],3,"Kuantitatif lebih dulu, kualitatif menjelaskan hasilnya."],
+[4,"Penelitian yang tidak memakai hipotesis, tetapi fokus penelitian yang berkembang di lapangan, umumnya adalah...",["Kualitatif","Eksperimen","Survei kuantitatif","Quasi eksperimen"],0,"Kualitatif bersifat induktif dengan fokus yang dapat berkembang."]];
+var X=[
+[0,"Bagian mana yang berisi alasan mengapa penelitian layak dan penting dilakukan (urgensi)?",["Latar belakang","Lampiran","Abstrak saja","Ucapan terima kasih"],0,"Urgensi penelitian dijelaskan di latar belakang."],
+[0,"Latar belakang yang runtut biasanya mengikuti pola...",["Khusus ke umum tanpa arah","Umum ke khusus (corong), lalu celah penelitian","Acak","Hanya hasil penelitian"],1,"Mulai dari isu umum, menyempit ke masalah spesifik, lalu celah yang diisi."],
+[0,"Data pendukung latar belakang sebaiknya berasal dari...",["Opini pribadi","Rumor","Fakta dan data bersumber terpercaya","Tebakan"],2,"Fakta bersitasi menguatkan masalah yang diangkat."],
+[0,"Judul penelitian yang baik bersifat...",["Ambigu dan sangat panjang","Penuh singkatan","Hanya satu kata","Ringkas, jelas, mencerminkan variabel atau fokus"],3,"Judul harus informatif dan konsisten dengan rumusan masalah."],
+[1,"Gaya sitasi APA menuliskan rujukan dengan format...",["Catatan kaki bernomor","Nama belakang penulis dan tahun","Judul buku saja","Nomor halaman saja"],1,"Contoh APA: (Sugiyono, 2019)."],
+[1,"Sumber primer adalah...",["Ringkasan di blog","Karya asli yang ditulis langsung oleh penelitinya","Kutipan di media sosial","Ensiklopedia populer"],1,"Sumber primer memuat temuan atau gagasan asli, bukan olahan pihak lain."],
+[1,"Variabel bebas (independen) adalah variabel yang...",["Dipengaruhi variabel lain","Hanya dikontrol","Mempengaruhi variabel lain","Tidak berperan"],2,"Variabel bebas menjadi penyebab; variabel terikat menjadi akibat."],
+[1,"Penelitian terdahulu yang baik untuk dirujuk adalah yang...",["Paling tebal","Berbahasa paling sulit","Paling lama terbit","Relevan, terkini, dan kredibel"],3,"Pilih yang sesuai topik, relatif baru, dan bersumber jurnal atau penerbit terpercaya."],
+[2,"Studi kasus termasuk pendekatan...",["Kualitatif","Kuantitatif murni","R&D","Eksperimen"],0,"Studi kasus mengkaji satu kasus secara mendalam dalam konteks nyata."],
+[2,"Wawancara, observasi, dan dokumentasi adalah teknik pengumpulan data yang lazim pada...",["Uji statistik","Kualitatif","Regresi","Analisis faktor"],1,"Ketiganya menjadi sumber data utama penelitian kualitatif."],
+[2,"Uji statistik untuk melihat pengaruh satu variabel terhadap variabel lain adalah...",["Regresi","Triangulasi","Member check","Reduksi data"],0,"Analisis regresi menguji pengaruh variabel bebas terhadap terikat."],
+[2,"Analisis data kualitatif model Miles dan Huberman: reduksi data, penyajian data, dan...",["Uji t","Penarikan kesimpulan atau verifikasi","Pengambilan sampel","Uji normalitas"],1,"Tiga alur: reduksi, penyajian, penarikan kesimpulan."],
+[2,"Eksperimen berbeda dari survei karena eksperimen...",["Tidak memakai data","Hanya wawancara","Memberi perlakuan (treatment) pada subjek","Tanpa variabel"],2,"Peneliti memanipulasi variabel bebas untuk melihat akibatnya."],
+[3,"Model 4D pada R&D terdiri dari...",["Define, Design, Develop, Disseminate","Draft, Do, Deliver, Done","Dig, Decide, Direct, Display","Data, Design, Deploy, Debug"],0,"4D: Define, Design, Develop, Disseminate."],
+[3,"Uji coba skala kecil sebelum uji coba luas pada R&D bertujuan...",["Mengurangi biaya cetak","Menemukan kelemahan produk lebih awal","Menghindari validasi","Mempercepat publikasi"],1,"Revisi awal membuat uji coba lapangan lebih matang."],
+[3,"Sequential exploratory dimulai dengan...",["Kuantitatif","Pengembangan produk","Kualitatif untuk menggali, lalu kuantitatif untuk menguji","Analisis dokumen"],2,"Temuan kualitatif dijadikan dasar tahap kuantitatif."],
+[3,"Integrasi data kualitatif dan kuantitatif dilakukan pada...",["Daftar pustaka","Abstrak saja","Halaman judul","Analisis, interpretasi, atau pembahasan"],3,"Integrasi adalah ciri penting yang membedakan mixed methods."],
+[4,"Peneliti tinggal berbulan-bulan bersama komunitas untuk memahami budaya kerjanya. Desain tepat:",["Etnografi (kualitatif)","Eksperimen","Survei","R&D"],0,"Imersi jangka panjang untuk memahami budaya = etnografi."],
+[4,"Peneliti menguji efektivitas media ajar buatannya dengan pretest-posttest setelah divalidasi ahli. Pendekatan tepat:",["Fenomenologi","R&D dengan uji efektivitas","Studi dokumen","Etnografi"],1,"Produk dikembangkan, divalidasi, lalu diuji efektivitasnya."],
+[4,"Peneliti mewawancarai guru untuk menyusun instrumen, lalu menyebar angket skala besar. Desain tepat:",["Kuantitatif murni","R&D 4D","Mixed methods sequential exploratory","Kualitatif murni"],2,"Kualitatif dulu untuk menggali, kuantitatif sesudahnya untuk menguji."]];
+Q=Q.concat(X).sort(function(a,b){return a[0]-b[0]});
+var T=["Pendahuluan","Kajian Teori","Metodologi Kualitatif dan Kuantitatif","Metodologi R&D dan Mixed Methods","Boss Battle: Pilih Desain Tepat"],LS=[];
+(function(){var N=[
+[0,"Pernyataan penelitian ini penting karena angka putus sekolah naik 12 persen termasuk unsur...",["Data pendukung masalah","Kesimpulan","Metode","Saran"],0],
+[0,"Rumusan masalah Bagaimana pengaruh X terhadap Y cocok untuk penelitian...",["Fenomenologi","Etnografi","Kuantitatif","Studi kasus"],2],
+[0,"Kata kerja yang tepat untuk tujuan penelitian adalah...",["Berharap","Mungkin","Menganalisis, mendeskripsikan, mengetahui","Menyimpulkan hasil"],2],
+[0,"Research gap adalah...",["Jarak lokasi penelitian","Celah: hal yang belum diteliti atau hasil yang belum konsisten","Selisih jumlah halaman","Perbedaan dosen"],1],
+[0,"Mana yang BUKAN bagian pendahuluan?",["Latar belakang","Hasil dan pembahasan","Rumusan masalah","Tujuan penelitian"],1],
+[0,"Urgensi penelitian paling kuat bila didukung...",["Perasaan peneliti","Popularitas topik","Gaya bahasa","Data dan hasil studi pendahuluan"],3],
+[0,"Kalimat latar belakang ilmiah menghindari...",["Rujukan jurnal","Data","Opini tanpa dasar dan bahasa sehari-hari","Istilah baku"],2],
+[0,"Pendahuluan yang baik ditutup dengan...",["Lampiran","Tujuan, manfaat, dan ruang lingkup yang jelas","Daftar pustaka","Hasil analisis"],1],
+[1,"Kutipan langsung lebih dari 40 kata biasanya ditulis...",["Dalam tanda kutip biasa","Sebagai blok kutipan terpisah","Tanpa sitasi","Dengan huruf tebal"],1],
+[1,"Teori berbeda dari konsep karena teori...",["Berupa angka","Menjelaskan hubungan antarkonsep","Selalu hasil riset sendiri","Sama dengan data"],1],
+[1,"Variabel moderator adalah variabel yang...",["Memperkuat atau memperlemah hubungan variabel bebas dan terikat","Menggantikan variabel bebas","Hanya ada di kualitatif","Tidak diukur"],0],
+[1,"Daftar pustaka gaya APA disusun berdasarkan...",["Tahun saja","Jumlah halaman","Judul tebal","Urutan alfabet nama penulis"],3],
+[1,"Pencarian pustaka sistematis dilakukan di...",["Media sosial","Grup chat","Basis data jurnal seperti Scopus, Sinta, Google Scholar","Mesin pencari acak"],2],
+[1,"Landasan teori dipilih dengan melihat...",["Kecocokan dengan variabel dan masalah penelitian","Popularitas penulis","Warna sampul","Harga buku"],0],
+[1,"Mengutip tanpa membaca sumber aslinya disebut...",["Sitasi sekunder","Sitasi primer","Triangulasi","Parafrase terbaik"],0],
+[1,"Hipotesis nol (H0) menyatakan bahwa...",["Ada pengaruh signifikan","Tidak ada pengaruh atau hubungan","Peneliti benar","Data salah"],1],
+[2,"Populasi adalah...",["Sebagian kecil subjek","Seluruh objek atau subjek sasaran penelitian","Instrumen","Teknik analisis"],1],
+[2,"Skala Likert umumnya mengukur...",["Tinggi badan","Suhu","Sikap, persepsi, atau pendapat","Jumlah penduduk"],2],
+[2,"Saturasi data pada kualitatif tercapai ketika...",["Waktu habis","Informasi baru tidak lagi muncul","Informan bosan","Biaya habis"],1],
+[2,"Uji normalitas dilakukan untuk mengetahui...",["Apakah data berdistribusi normal","Validitas","Jumlah populasi","Kejujuran responden"],0],
+[2,"Member check pada kualitatif adalah...",["Menghitung anggota tim","Memilih sampel","Mengonfirmasi hasil temuan kepada partisipan","Uji t"],2],
+[2,"Cronbach alpha dipakai untuk uji...",["Reliabilitas","Normalitas","Validitas isi","Triangulasi"],0],
+[2,"Fenomenologi berfokus pada...",["Pengalaman hidup yang dihayati partisipan","Hubungan variabel","Pengembangan produk","Uji hipotesis"],0],
+[2,"Simple random sampling memberi...",["Hanya peluang bagi ahli","Peluang sama bagi setiap anggota populasi","Pemilihan sesuka peneliti","Sampel 10 orang"],1],
+[3,"Tahap ADDIE yang menyusun rancangan produk adalah...",["Analysis","Evaluation","Implementation","Design"],3],
+[3,"Angket kelayakan oleh ahli pada R&D menghasilkan...",["Data kuantitatif sekaligus masukan kualitatif","Hanya wawancara","Hanya observasi","Tidak ada data"],0],
+[3,"Mixed methods embedded berarti...",["Dua penelitian terpisah","Satu jenis data pendukung dalam desain utama","Tanpa data","Hanya pustaka"],1],
+[3,"Notasi QUAN → qual menunjukkan...",["Kualitatif dominan","Setara dan bersamaan","Kuantitatif dominan, kualitatif pelengkap berurutan","Tanpa urutan"],2],
+[3,"Produk R&D dianggap efektif bila...",["Disukai peneliti","Terbukti meningkatkan hasil lewat uji","Mahal","Berwarna menarik"],1],
+[3,"Penyebaran produk akhir pada 4D disebut tahap...",["Define","Design","Develop","Disseminate"],3],
+[3,"Kelemahan utama mixed methods adalah...",["Butuh waktu, biaya, dan keahlian ganda","Tidak valid","Hanya satu metode","Tanpa data"],0],
+[3,"Revisi produk berdasarkan masukan ahli dilakukan...",["Setelah publikasi","Sebelum diujicobakan","Tidak perlu","Setelah ujian"],1],
+[4,"Hubungan motivasi dan prestasi 150 mahasiswa dengan korelasi Pearson:",["Kualitatif","Kuantitatif korelasional","R&D","Etnografi"],1],
+[4,"Mengembangkan aplikasi belajar, divalidasi ahli, lalu diuji ke siswa:",["Survei murni","Fenomenologi","Studi kasus","R&D"],3],
+[4,"Menelusuri makna merdeka belajar bagi 8 guru lewat wawancara:",["Eksperimen","Kualitatif","Kuantitatif","Korelasional"],1],
+[4,"Survei pengguna dulu, lalu diskusi kelompok untuk menjelaskan temuan aneh:",["Explanatory sequential","Exploratory sequential","R&D 4D","Eksperimen murni"],0],
+[4,"Kelas kontrol vs kelas eksperimen dengan posttest:",["Fenomenologi","Etnografi","Quasi-eksperimen (kuantitatif)","Studi dokumen"],2],
+[4,"Mengkaji satu sekolah unggulan mendalam dengan banyak sumber data:",["Survei","Studi kasus (kualitatif)","Regresi","ADDIE"],1],
+[4,"Wawancara menyusun indikator, lalu angket diuji pada 500 responden:",["Explanatory sequential","Kuantitatif murni","Etnografi","Exploratory sequential"],3],
+[4,"Modul dikembangkan dengan ADDIE lalu diuji pretest-posttest:",["Kualitatif murni","R&D","Fenomenologi","Studi kasus"],1]];
+Q=Q.concat(N);for(var g=0;g<5;g++){var qs=Q.filter(function(x){return x[0]==g}),k=Math.ceil(qs.length/6),z=Math.ceil(qs.length/k);for(var j=0;j<k;j++)LS.push({g:g,t:"Level "+(LS.length+1)+": "+T[g]+(k>1?" (bagian "+(j+1)+")":""),q:qs.slice(j*z,(j+1)*z),m:g==4?2:1})}})();
+var AC,mu=1,mus=0,mi=0,mid,db=null,usr=null,host=0,solo=0,over=0,playing=0,scr="",me={id:"x"+Math.random().toString(36).slice(2),n:"",lv:{},cl:0},pe=[],G=null,sel="t",li=0,ql=[],qi=0,lives=3,streak=0,bet=0,hint=0,done=0,qt=30,ord=[],ML=[262,330,392,330,294,349,440,349];
+function tone(f,d,ty,v,at){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type=ty||"sine";o.frequency.value=f;var s=AC.currentTime+(at||0);g.gain.setValueAtTime(v||.15,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(g);g.connect(AC.destination);o.start(s);o.stop(s+d)}catch(e){}}
+function sfx(k){if(!mu)return;if(k=="ok")[523,659,784,1047].forEach(function(f,i){tone(f,.25,"triangle",.18,i*.09)});else if(k=="bad"){tone(196,.35,"sawtooth",.15);tone(147,.5,"sawtooth",.15,.18)}else[392,523,659,784,1047].forEach(function(f,i){tone(f,.3,"square",.08,i*.12)})}
+var mst=0,mrun=0;
+function kick(){if(!mu)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.frequency.setValueAtTime(160,t);o.frequency.exponentialRampToValueAtTime(40,t+.15);g.gain.setValueAtTime(.35,t);g.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+.2)}catch(e){}}
+function mstep(){if(!mus){mrun=0;return}if(mu){var s=mst%16,bar=Math.floor(mst/16)%4,R=[110,87.3,130.8,98][bar],th=[1.189,1.26,1.26,1.26][bar],hard=li>=4;if(s%4==0)kick();if(s%2==0)tone(R,.16,"sawtooth",.06);else tone(9000,.03,"square",.012);if(hard||s%2==0){var a=[1,th,1.498,2,1.498,th][mst%6];tone(R*2*a,.12,"triangle",.045)}if(hard&&s%8==6)tone(R*4,.1,"square",.025)}mst++;setTimeout(mstep,Math.max(85,135-li*4))}
+function music(){if(mus)mus=0;else{mus=1;if(!mrun){mrun=1;mstep()}}var b=document.getElementById("mb");if(b)b.textContent=mus?"Musik: nyala":"Musik: mati"}
+function autoM(){if(!mus)music()}
+var $=function(h){document.getElementById("scr").innerHTML=h},E=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})},rnd=function(){return Math.random()-.5};
+function tot(){var s=0;for(var k in me.lv)s+=me.lv[k];return s}
+function save(){if(db)db.doc("players/"+me.id).set({n:me.n,tot:tot(),lv:me.lv,cl:me.cl}).catch(function(){})}
+function all(){if(cm)return cp.map(function(p,i){var s=0;for(var k in p.lv)s+=p.lv[k];return{id:"c"+i,n:p.n,tot:s,lv:p.lv,cl:p.cl}});return(db?pe.filter(function(p){return p.id!=me.id}):[]).concat(me.n?[{id:me.id,n:me.n,tot:tot(),lv:me.lv,cl:me.cl}]:[])}
+function val(p){return sel=="t"?p.tot:p.lv[sel]}
+function dlb(){var el=document.getElementById("lb");if(!el)return;var M=["🥇","🥈","🥉"],a=all().filter(function(p){return sel=="t"||(p.lv&&p.lv[sel]!==undefined)}).sort(function(x,y){return val(y)-val(x)});el.innerHTML=a.length?'<table class="rule">'+a.slice(0,8).map(function(p,r){return"<tr"+(p.id==me.id?' style="font-weight:bold"':"")+"><td>"+(M[r]||(r+1)+".")+" "+E(p.n)+'</td><td class="pts">'+val(p)+"</td></tr>"}).join("")+"</table>":'<p class="mut">Belum ada skor di papan ini.</p>'}
+function fmt(ms){var s=Math.floor(ms/1000);return Math.floor(s/60)+":"+(s%60<10?"0":"")+s%60}
+function endsAt(){return cm?solo:G?G.endsAt:solo}
+function tick(){}
+function route(){if(over)return fin();if(G||solo)intro(Math.min(me.cl,LS.length-1));else lobby()}
+function join(){var n=document.getElementById("nm").value.trim();if(!n)return;autoM();me.n=n;try{localStorage.setItem("nm",n)}catch(e){}var x=pe.filter(function(p){return p.id==me.id})[0];if(x){me.lv=x.lv||{};me.cl=x.cl||0}if(!db)solo=Date.now()+5400000;save();dlb();route()}
+function joinScr(){scr="join";var n="";try{n=localStorage.getItem("nm")||""}catch(e){}$('<div class="card"><h2>Ekspedisi Karya Tulis Ilmiah</h2><p>Semua pemain bermain bersamaan tanpa batas waktu. '+LS.length+' level, '+Q.length+' soal, 3 nyawa per level. Papan skor tampil langsung untuk total dan tiap level.</p><table class="rule"><tr><td>Benar</td><td class="p">+10 (+5 tiap streak 3)</td></tr><tr><td>Taruhan: benar / salah</td><td>+20 / −10</td></tr><tr><td>Salah</td><td class="m">−5 dan kehilangan 1 nyawa</td></tr><tr><td>Petunjuk</td><td class="m">−2</td></tr><tr><td>Selesai level</td><td class="p">+20 dan +5 per nyawa tersisa</td></tr><tr><td>Nyawa habis</td><td class="m">−10, level diulang</td></tr><tr><td>Level Boss</td><td>semua poin x2</td></tr></table><p>'+(db?"":'<span class="mut">Mode solo: skor teman tidak terhubung pada tampilan ini.</span>')+'</p><input id="nm" placeholder="Nama kamu" value="'+E(n)+'" aria-label="Nama"><button onclick="join()" style="margin-top:8px">Masuk online (tiap orang di perangkat sendiri)</button></div><div class="card"><h3>Main di satu layar</h3><p>Cocok untuk kelas: 2 sampai 8 pemain menjawab soal yang sama serentak di satu perangkat atau proyektor, tanpa akun dan tanpa pengaturan.</p><button onclick="cSetup()">Mode satu layar</button></div>')}
+function lobby(){scr="lobby";$('<div class="card"><h2>Ruang tunggu</h2><p>Halo, '+E(me.n)+'. '+pe.length+' pemain sudah masuk:</p><div class="sb">'+pe.map(function(p){return'<span class="chip">'+E(p.n)+"</span>"}).join("")+"</div>"+'<p><button onclick="startG()">Mulai game</button></p><p class="mut">Siapa pun yang sudah masuk boleh menekan mulai.</p>'+"</div>")}
+function startG(){var n=Date.now();db.doc("game/state").set({startAt:n,endsAt:n+5400000})}
+function resetG(){pe.forEach(function(p){db.doc("players/"+p.id).delete()});db.doc("game/state").delete();G=null;over=0;me.lv={};me.cl=0;save();lobby()}
+function intro(i){scr="intro";li=i;var l=LS[i];$('<div class="card"><h2>'+l.t+"</h2><p>"+LV[l.g].i+'</p><p class="mut">'+l.q.length+" soal · 3 nyawa · "+(l.m>1?"poin x2":"poin normal")+". Nyawa habis berarti level diulang dengan soal teracak.</p><button onclick=\"startL()\">Mulai level</button></div>")}
+function startL(){scr="play";ql=LS[li].q.slice().sort(rnd);qi=0;lives=3;streak=0;me.lv[li]=0;ask()}
+function ask(){var q=ql[qi];hint=0;bet=0;done=0;qt=30;playing=1;ord=q[2].map(function(_,i){return i}).sort(rnd);$('<div class="row"><span class="mut">'+LS[li].t+'</span><span><b>'+"♥".repeat(lives)+'</b> <span class="mut">soal '+(qi+1)+"/"+ql.length+'</span></span></div><div class="card"><p class="mut">Skor level: <b>'+me.lv[li]+"</b> · streak "+streak+'</p><h3>'+q[1]+"</h3>"+ord.map(function(o,k){return'<button class="opt" id="o'+k+'" onclick="pick('+k+')">'+String.fromCharCode(65+k)+". "+q[2][o]+"</button>"}).join("")+'<div class="row"><label><input type="checkbox" id="bt" style="width:auto" onchange="bet=this.checked?1:0"> Taruhan (+20 / −10)</label><button class="alt" id="hb" onclick="useHint()">Petunjuk (−2)</button></div><div id="fb"></div></div>')}
+function useHint(){if(hint||done)return;hint=1;var q=ql[qi],w=[];ord.forEach(function(o,k){if(o!=q[3])w.push(k)});w.sort(rnd).slice(0,2).forEach(function(k){var b=document.getElementById("o"+k);b.classList.add("gone");b.disabled=true});me.lv[li]-=2*LS[li].m;document.getElementById("hb").disabled=true;save();dlb()}
+function pick(k){if(done)return;done=1;playing=0;var q=ql[qi],m=LS[li].m,ok=k>=0&&ord[k]==q[3],d=0,msg="";document.getElementById("bt").disabled=true;document.getElementById("hb").disabled=true;
+if(ok){streak++;d=(bet?20:10)*m;if(streak%3==0){d+=5*m;msg+=" Bonus streak +"+5*m+"."}}else{streak=0;lives--;d=-(bet?10:5)*m;if(k<0)msg=" Waktu habis!"}
+me.lv[li]+=d;sfx(ok?"ok":"bad");save();dlb();
+ord.forEach(function(o,j){var b=document.getElementById("o"+j);b.disabled=true;if(o==q[3])b.classList.add("ok");else if(j==k)b.classList.add("bad")});
+document.getElementById("fb").innerHTML='<div class="fb '+(ok?"ok":"bad")+'"><b>'+(ok?"Benar! ":"Kurang tepat. ")+'<span class="pts '+(ok?"p":"m")+'">'+(d>0?"+":"")+d+" poin</span></b>"+msg+(ok?"":" Nyawa tersisa: "+lives+".")+"<br>"+(q[4]||"Jawaban benar: "+q[2][q[3]])+'</div><button onclick="nx()">Lanjut</button>'}
+function nx(){if(over)return;if(lives<=0)return endL(0);qi++;if(qi>=ql.length)return endL(1);ask()}
+function endL(w){var m=LS[li].m,b,nxt=li+1<LS.length;scr="end";if(w){var bn=(20+lives*5)*m;me.lv[li]+=bn;if(li+1>me.cl)me.cl=Math.min(li+1,LS.length);sfx("lv");b="Level selesai! Bonus +"+bn+" (nyawa tersisa "+lives+")."}else{me.lv[li]-=10*m;sfx("bad");b="Nyawa habis. Penalti −"+10*m+". Ulangi level ini."}save();sel=""+li;document.getElementById("sel").value=sel;dlb();
+$('<div class="card"><h2>'+LS[li].t+"</h2><p>"+b+" Skor level: <b>"+me.lv[li]+'</b></p><p class="mut">Papan skor level ini ada di bagian atas.</p></div><button onclick="'+(w?(nxt?"intro("+(li+1)+")":"fin()"):"startL()")+'">'+(w?(nxt?"Level berikutnya":"Lihat hasil akhir"):"Ulangi level")+"</button>")}
+function fin(){scr="fin";playing=0;sel="t";document.getElementById("sel").value="t";dlb();sfx("lv");var a=all().sort(function(x,y){return y.tot-x.tot}),top=a.length?a[0].tot:0;$('<h2>Game selesai</h2><div class="card"><h3>Peringkat akhir</h3><table class="rule">'+a.map(function(p,i){return"<tr><td>"+(i+1)+". "+E(p.n)+"</td><td>level selesai: "+(p.cl||0)+'</td><td class="pts">'+p.tot+"</td></tr>"}).join("")+"</table><p>Gelar juara: <b>"+(top>=400?"Profesor Penelitian":top>=250?"Peneliti Ahli":top>=100?"Penulis Jurnal":"Mahasiswa Rajin")+"</b></p></div>"+(host&&db?'<button class="alt" onclick="resetG()">Reset game (host)</button>':""))}
+var cm=0,cp=[],cplay=0,ct=30,cr=0,cord=[],cq=[];
+function cSetup(){scr="csetup";$('<div class="card"><h2>Mode satu layar</h2><p>Semua pemain menjawab soal yang sama pada waktu yang sama. Setiap pemain menekan barisnya sendiri, dan jawaban baru terbuka setelah semua menjawab.</p><label>Jumlah pemain<select id="cn" onchange="cNames()">'+[2,3,4,5,6,7,8].map(function(i){return"<option"+(i==8?" selected":"")+">"+i+"</option>"}).join("")+'</select></label><div id="cnm"></div><button onclick="cStart()" style="margin-top:8px">Mulai game</button></div>');cNames()}
+function cNames(){var n=+document.getElementById("cn").value,h="";for(var i=0;i<n;i++)h+='<input class="cpn" placeholder="Nama pemain '+(i+1)+'" aria-label="Nama pemain '+(i+1)+'">';document.getElementById("cnm").innerHTML=h}
+function cStart(){autoM();cm=1;over=0;cp=[];document.querySelectorAll(".cpn").forEach(function(x,i){cp.push({n:x.value.trim()||"Pemain "+(i+1),lv:{},cl:0,l:3,a:-1,ta:0,k:0})});solo=Date.now()+5400000;cLevel(0)}
+function cLevel(i){scr="cintro";li=i;var l=LS[i];$('<div class="card"><h2>'+l.t+"</h2><p>"+LV[l.g].i+'</p><p class="mut">'+l.q.length+" soal · 3 nyawa tiap pemain"+(l.m>1?" · poin x2":"")+'</p><button onclick="cBegin()">Mulai level</button></div>')}
+function cBegin(){cq=LS[li].q.slice().sort(rnd);cr=0;cp.forEach(function(p){p.l=3;p.k=0;p.lv[li]=0});cAsk()}
+function cAsk(){var q=cq[cr];cord=q[2].map(function(_,i){return i}).sort(rnd);cp.forEach(function(p){p.a=-1;p.ta=0});ct=30;cplay=1;cDraw()}
+function cDraw(){var q=cq[cr];$('<div class="row"><span class="mut">'+LS[li].t+'</span><span class="mut">soal '+(cr+1)+"/"+cq.length+'</span></div><div class="card"><h3>'+q[1]+"</h3>"+cord.map(function(o,k){return"<p>"+String.fromCharCode(65+k)+". "+q[2][o]+"</p>"}).join("")+'</div><div class="card">'+cp.map(function(p,i){return'<div class="row"><span><b>'+E(p.n)+"</b> "+"♥".repeat(p.l)+"</span><span>"+(p.l<=0?'<span class="mut">gugur</span>':p.a>=0?'<span class="mut">sudah menjawab</span>':[0,1,2,3].map(function(k){return'<button class="alt" onclick="cAns('+i+","+k+')">'+String.fromCharCode(65+k)+"</button>"}).join(" "))+"</span></div>"}).join("")+"</div>")}
+function cAns(i,k){var p=cp[i];if(!cplay||p.a>=0||p.l<=0)return;p.a=k;p.ta=ct;tone(440,.08,"sine",.1);if(cp.every(function(x){return x.l<=0||x.a>=0}))cReveal();else cDraw()}
+function cReveal(){if(!cplay)return;cplay=0;var q=cq[cr],m=LS[li].m,bt=-1,out="";cp.forEach(function(p){if(p.l>0&&p.a>=0&&cord[p.a]==q[3]&&p.ta>bt)bt=p.ta});
+cp.forEach(function(p){if(p.l<=0)return;var ok=p.a>=0&&cord[p.a]==q[3],d;if(ok){p.k++;d=10*m;if(p.k%3==0)d+=5*m}else{p.k=0;p.l--;d=-5*m}p.lv[li]+=d;out+="<tr><td>"+E(p.n)+"</td><td>"+(p.a<0?"tidak menjawab":String.fromCharCode(65+p.a))+'</td><td class="pts '+(ok?"p":"m")+'">'+(d>0?"+":"")+d+"</td></tr>"});
+sfx(bt>=0?"ok":"bad");dlb();
+$('<div class="card"><h3>Jawaban benar: '+String.fromCharCode(65+cord.indexOf(q[3]))+". "+q[2][q[3]]+"</h3><p>"+(q[4]||"")+'</p><table class="rule"><tr><th>Pemain</th><th>Jawab</th><th>Poin</th></tr>'+out+'</table><p class="mut">Bonus streak: 3 benar beruntun +5. Salah atau kosong: −5 dan kehilangan 1 nyawa.</p></div><button onclick="cNext()">Lanjut</button>')}
+function cNext(){cr++;if(cr>=cq.length||cp.every(function(p){return p.l<=0}))return cEndL();cAsk()}
+function cEndL(){var m=LS[li].m,out="",nx=li+1<LS.length;cp.forEach(function(p){var b=p.l>0?(20+p.l*5)*m:-10*m;p.lv[li]+=b;if(p.l>0&&p.cl<li+1)p.cl=li+1;out+="<tr><td>"+E(p.n)+"</td><td>"+(p.l>0?"selesai, nyawa "+p.l:"gugur")+'</td><td class="pts">'+p.lv[li]+"</td></tr>"});sel=""+li;document.getElementById("sel").value=sel;dlb();sfx("lv");scr="cend";
+$('<div class="card"><h2>'+LS[li].t+' selesai</h2><table class="rule"><tr><th>Pemain</th><th>Status</th><th>Skor level</th></tr>'+out+"</table></div><button onclick=\""+(nx?"cLevel("+(li+1)+")":"cfin()")+'">'+(nx?"Level berikutnya":"Lihat hasil akhir")+"</button>")}
+function cfin(){cplay=0;scr="fin";sel="t";document.getElementById("sel").value="t";dlb();sfx("lv");var a=all().sort(function(x,y){return y.tot-x.tot});$('<h2>Game selesai</h2><div class="card"><h3>Peringkat akhir</h3><table class="rule">'+a.map(function(p,i){return"<tr><td>"+(i+1)+". "+E(p.n)+'</td><td class="pts">'+p.tot+"</td></tr>"}).join("")+'</table></div><button onclick="cm=0;over=0;solo=0;joinScr()">Main lagi</button>')}
+async function boot(){document.getElementById("app").innerHTML='<div class="card"><div class="row"><b id="clk">Papan skor langsung</b><select id="sel" style="width:auto;max-width:60%" onchange="sel=this.value;dlb()"><option value="t">Papan: total semua level</option>'+LS.map(function(l,i){return'<option value="'+i+'">Papan: '+E(l.t)+"</option>"}).join("")+'</select></div><div id="lb"></div></div><div id="scr"></div>';setInterval(tick,1000);
+try{var c=window.claude;if(c){usr=await c.use("user");db=await c.use("db")}var id=usr&&await usr.id();if(db&&id){me.id=id;host=usr.isOwner();db.collection("players").onSnapshot(function(s){pe=s.docs.map(function(d){var x=d.data();x.id=d.id;return x});dlb();if(scr=="lobby")lobby()},function(){});db.doc("game/state").onSnapshot(function(s){G=s.exists?s.data():null;if(scr=="lobby"&&G)route()},function(){})}else db=null}catch(e){db=null}
+joinScr()}
+boot();
+</script>
+</body>
+</html>
